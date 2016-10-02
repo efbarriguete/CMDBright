@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xmlns:tx="http://www.springframework.org/schema/tx"
+   xsi:schemaLocation="
+      http://www.springframework.org/schema/beans 
+      http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+      http://www.springframework.org/schema/tx 
+      http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+      http://www.springframework.org/schema/context 
+      http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+<!-- 
+/*****************************************************************************
+ * CMDBright - Clear and nimble Configuration Management DataBase 
+ * Copyright (C) 2016  Eladio Fernández Barrigüete
+ * 
+ * This file is part of CMDBright.
+ * 
+ * CMDBright is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * CMDBright is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with CMDBright.  If not, see <http://www.gnu.org/licenses/>.
+******************************************************************************/
+ -->
+ 
+<!--  El siguiente bean (dataSource) hará referencia a la configuración de la conexión con la BD que se le asígnará a la EntityManagerFactoryBean (bean anterior)-->
+<!--  Haciéndolo de esta forma, el archivo persistence.xml destinado a la configuración de JPA, no contendrá practicamente ninguna especificaciones/configuración -->
+   <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://localhost:5432/cmdb"/>
+        <property name="username" value="postgres"/>
+        <property name="password" value=""/>
+    </bean>
+
+   
+   <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+	  <property name="packagesToScan" value="model" /> <!-- para dejar de usar persistence.xml -->
+  	  <property name="dataSource" ref="dataSource" />
+	  <property name="jpaVendorAdapter">
+         <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+      </property>
+      <property name="jpaProperties"> <!-- Para configurar propiedades de Hibernate/JPA propiamente dichas: -->
+         <props>
+             <!--  prop key="hibernate.hbm2ddl.auto">create-drop</prop>  Propiedad para autogenerar las tablas de la BD -->
+		     <!-- como ya he usado en las clases anotaciones hibernate/jpa, creo que no serían necesarias estas líneas de mapping: -->
+            <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+            <prop key="eclipselink.logging.level">ALL</prop>
+            <prop key="connection.pool_size">15</prop> <!-- conexiones entre app y BD - recomendable alrededor de 20 -->
+            <prop key="show_sql">false</prop>  <!-- para mostrar resultado de op. SQL por consola -->
+            <prop key="format_sql">true</prop>
+         </props>
+      </property> 
+   </bean>
+   
+   <bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/> <!-- Para dar soporte a transacciones sobre operaciones JDBC sencillas -->
+
+   <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+      <property name="entityManagerFactory" ref="entityManagerFactory" />
+      <property name="jpaDialect" ref="jpaDialect" />
+   </bean>
+
+
+   <bean id="persistenceExceptionTranslationPostProcessor"
+      class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+   
+   <!--   tx:annotation-driven />   no sé si la línea correcta es esta o la siguiente o la sig (o valdrían las 3): 
+   <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager" /> -->
+   <tx:annotation-driven transaction-manager="transactionManager" />
+
+   <!-- Tampoco sé si las líneas que siguen son necesarias: -->
+    <context:component-scan base-package="model, dao.implJpa, dao.generic, dao.interfaces, service, vista"> <!-- Para buscar clases anotadas con @Component, @Service, @Repository... y así incluirlas como nuevos bean -->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository" />
+    </context:component-scan>
+   
+    <!--  context:spring-configured /> no necesaria de momento -->
+    
+    <context:annotation-config /> <!-- para que funcione la anotación @Autowired -->
+      
+ 
+</beans>

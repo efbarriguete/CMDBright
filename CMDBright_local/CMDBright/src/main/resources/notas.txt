@@ -1,0 +1,5 @@
+
+Esta carpeta de resources se puede borrar.
+Creo que sólo la necesito para tener en la ubicación correcta el fichero de contexto "spring.xml" para hacer pruebas locales.
+Para la aplicación web, no es necesaria.
+La carpeta "resources" que sí necesito, es la que se encuentra en la carpeta "webapp". 

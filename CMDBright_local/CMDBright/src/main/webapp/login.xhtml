@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<!-- 
+/*****************************************************************************
+ * CMDBright - Clear and nimble Configuration Management DataBase 
+ * Copyright (C) 2016  Eladio Fernández Barrigüete
+ * 
+ * This file is part of CMDBright.
+ * 
+ * CMDBright is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * CMDBright is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with CMDBright.  If not, see <http://www.gnu.org/licenses/>.
+******************************************************************************/
+ -->
+
+<h:head>
+	<title>Login CMDBright</title>
+</h:head>
+
+<h:body>
+
+
+	<script type="text/javascript">
+		//<![CDATA[
+		function manejarLogin(xhr, status, args) {
+			if (!args.validationFailed && args.estaLogeado) {
+				setTimeout(function() {window.location = args.view;}, 200);
+			}
+		}
+		//]]>
+	</script>
+
+
+	<h:outputStylesheet name="css/style.css" />
+
+	<div id="contenido" style="margin: 0 auto;">
+		<div id="header-section">
+			<center>
+				<img src="#{request.contextPath}/resources/img/company_logo.png" alt=""/>
+			</center>
+		</div>
+
+		<p:separator style="border-color:teal; width:1100px" />
+		<br />
+		<br />
+		<!--  p:growl id="mensajes" showDetail="true" life="2000" /> -->
+		<center>
+			<h:form id="loginForm" style="align:center;">
+				<p:panel header="Login" style="width:400px">
+					<h:panelGrid columns="3" cellpadding="5">
+						<h:outputLabel for="username" value="Usuario:" />
+						<p:inputText id="username" value="#{loginBean.nombre}" required="true" label="usuario" />
+						<p:message for="username" style="color:red" display="icon" />
+						<h:outputLabel for="password" value="Contraseña:" />
+						<p:password id="password" value="#{loginBean.clave}" required="true" label="contraseña" />
+						<p:message for="password" style="color:red" display="icon" />
+
+						<f:facet name="footer">
+							<center>
+								<p:commandButton id="loginButton" value="Login"
+									actionListener="#{loginBean.login}" update="loginForm"
+									oncomplete="manejarLogin(xhr, status, args)" />
+							</center>
+						</f:facet>
+					</h:panelGrid>
+				</p:panel>
+			</h:form>
+			<div id="divMens" style="width:400px">
+				<p:messages id="mensajes" showDetail="true" autoUpdate="true" />
+			</div>
+		</center>
+	</div>
+</h:body>
+</html>

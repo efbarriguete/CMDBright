@@ -1,0 +1,192 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<!-- 
+/*****************************************************************************
+ * CMDBright - Clear and nimble Configuration Management DataBase 
+ * Copyright (C) 2016  Eladio Fernández Barrigüete
+ * 
+ * This file is part of CMDBright.
+ * 
+ * CMDBright is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * CMDBright is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with CMDBright.  If not, see <http://www.gnu.org/licenses/>.
+******************************************************************************/
+ -->
+
+
+<f:view contentType="text/html">
+	<h:head>
+		<title>
+			<ui:insert name="titulo"> CMDBright </ui:insert>
+		</title>
+	</h:head>
+	<h:body>
+	
+		<h:outputStylesheet name="css/style.css" />
+
+				<h:form id="timeOut">
+					<p:idleMonitor onidle="dialogTimeOut.show();" timeout="2000"/>
+					
+					<p:dialog header="Cabecera - Error timeOut"
+						widgetVar="dialogTimeOut" modal="true" closable="false"
+						width="400" visible="false">
+						<h:outputText value="Texto Error timeOUT" />
+						<br />
+						<input id="backToLogin" type="button" value="Volver al Login" onclick="logout(xhr, status, args)" />
+					</p:dialog>
+				</h:form>		
+		
+		<p:layout id="layoutMain" fullPage="true">
+
+		<!--  *************************************************************************  -->
+		<!--  *************************** Layout NORTE ***************************  -->
+			<p:layoutUnit position="north" size="120">
+				<p align="center">
+					<img src="#{request.contextPath}/resources/img/company_logo.png" alt="" style="margin-top:5"/>
+				</p>
+		<!--  *************************** Menús directos ***************************  -->
+				<p:toolbar>
+					<f:facet name="left">
+						<p:commandButton value="Equipamiento" actionListener="#{vistaEquip.resetBean}" 
+							action="/pags/equip.xhtml?faces-redirect=true" style="margin-left:20px;" />
+						<p:commandButton value="Infraestructura" actionListener="#{vistaToma.resetBean}" 
+							action="/pags/toma.xhtml?faces-redirect=true" style="margin-left:20px;" />
+						<p:commandButton value="Incidencias" actionListener="#{vistaIncidencia.resetBean}" 
+							action="/pags/incidencia.xhtml?faces-redirect=true" style="margin-left:20px;" />
+					</f:facet>
+
+
+					<f:facet name="right">
+						<h:form id="menuTmp">
+
+
+		<!--  *************************** Menú Históricos ***************************  -->
+							<p:commandButton id="historicBtn" value="Históricos" type="button" icon="fa fa-fw fa-history" style="margin-right:50px;"/>
+							<p:menu overlay="true" toggleable="false" trigger="historicBtn" my="left top" at="left bottom">
+								<p:submenu label="Equipamiento">
+								</p:submenu>
+									<p:menuitem value="Movimiento de equipos" action="/pags/errors/401.xhtml?faces-redirect=true" icon="fa fa-fw fa-map-marker"/>
+								<p:submenu label="Infraestructura">
+									<p:menuitem value="Cambios en tomas" action="/pags/construct.xhtml?faces-redirect=true" icon="fa fa-fw fa-sitemap"/>
+								</p:submenu>
+							</p:menu>
+
+
+
+		<!--  *************************** Menú mantenimiento ***************************  -->
+
+							<p:commandButton id="mantenimBtn" value="Mantenimiento" type="button" icon="fa fa-fw fa-cogs" style="margin-right:100px;"/>
+							<p:menu overlay="true" toggleable="true" trigger="mantenimBtn" my="left top" at="left bottom">
+								<p:submenu label="Equipamiento">
+									<p:menuitem value="Tipos de Equipamiento" actionListener="#{vistaTipoModel.resetBean}" action="/pags/tipoModel.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Fabricantes" actionListener="#{vistaFabricante.resetBean}" action="/pags/fabricante.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Modelos de hardware" actionListener="#{vistaModel.resetBean}" action="/pags/model.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Estados del Equipamiento" actionListener="#{vistaEstadoEquip.resetBean}" action="/pags/estadoEquip.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Servicios - GFH's" actionListener="#{vistaServicio.resetBean}" action="/pags/servicio.xhtml?faces-redirect=true"/>
+									<!--  p:menuitem value="Máquinas virtuales" actionListener="#{vistaMv.resetBean}" action="/pags/mv.xhtml?faces-redirect=true"/> -->
+								</p:submenu>
+								<p:submenu label="Red">
+									<p:menuitem value="Rangos de Ip" actionListener="#{vistaRango.resetBean}" action="/pags/rango.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Ip's" actionListener="#{vistaIp.resetBean}" action="/pags/ip.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Vlan's" actionListener="#{vistaVlan.resetBean}" action="/pags/vlan.xhtml?faces-redirect=true"/>
+								</p:submenu>
+								<p:submenu label="Infraestructura">
+									<p:menuitem value="Racks" actionListener="#{vistaRack.resetBean}" action="/pags/rack.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Patch Panels" actionListener="#{vistaPatchPanel.resetBean}" action="/pags/patchPanel.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Tipos de toma" actionListener="#{vistaTipoToma.resetBean}" action="/pags/tipoToma.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Tomas" actionListener="#{vistaToma.resetBean}" action="/pags/toma.xhtml?faces-redirect=true"/>
+								</p:submenu>
+								<p:submenu label="Incidencias">
+									<p:menuitem value="Tipos de incidencia" actionListener="#{vistaTipoIncidencia.resetBean}" action="/pags/tipoIncidencia.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Estados de incidencia" actionListener="#{vistaEstadoIncidencia.resetBean}" action="/pags/estadoIncidencia.xhtml?faces-redirect=true"/>
+								</p:submenu>
+								<p:submenu label="Suministro">
+									<p:menuitem value="Proveedores" actionListener="#{vistaProveedor.resetBean}" action="/pags/proveedor.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Tipos de operaciones" actionListener="#{vistaTipoOperacion.resetBean}" action="/pags/tipoOperacion.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Operaciones de suministro" actionListener="#{vistaOperacion.resetBean}" action="/pags/operacion.xhtml?faces-redirect=true"/>
+								</p:submenu>
+								<!--  
+								<p:submenu label="GFH's">
+								</p:submenu>
+								-->
+								<p:submenu label="Ubicación">
+									<p:menuitem value="Centros" actionListener="#{vistaCentro.resetBean}" action="/pags/centro.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Plantas" actionListener="#{vistaPlanta.resetBean}" action="/pags/planta.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Secciones" actionListener="#{vistaSeccion.resetBean}" action="/pags/seccion.xhtml?faces-redirect=true"/>
+									<p:menuitem value="Planos" actionListener="#{vistaPlano.resetBean}" action="/pags/plano.xhtml?faces-redirect=true" disabled="true"/>
+									<p:menuitem value="Huecos" actionListener="#{vistaHueco.resetBean}" action="/pags/hueco.xhtml?faces-redirect=true"/>
+								</p:submenu>
+							</p:menu>
+
+
+		<!--  *************************** Menú Usuario ***************************  -->
+							<p:commandButton id="userBtn" value="Usuario" type="button" icon="fa fa-fw fa-user" style="margin-right:10px;" styleClass="ui-priority-primary"/>
+							<p:menu overlay="true" trigger="userBtn" my="left top" at="left bottom">
+								<p:submenu label="Soporte al usuario">
+									<p:menuitem value="Manual de usuario" action="/pags/manual.xhtml?faces-redirect=true" icon="fa fa-fw fa-book"/>
+									<p:menuitem value="Ideas y sugerencias" action="/pags/sugerencias.xhtml?faces-redirect=true" icon="fa fa-fw fa-lightbulb-o"/>
+								</p:submenu>
+								<p:submenu label="Créditos">
+									<p:menuitem value="Acerca de" action="/pags/about.xhtml?faces-redirect=true" icon="fa fa-info-circle"/>
+								</p:submenu>
+								<p:submenu label="Salir">
+									<p:menuitem value="Logout" icon="ui-icon-extlink" actionListener="#{loginBean.logout}" oncomplete="logout(xhr, status, args)"/>
+								</p:submenu>
+							</p:menu>
+
+
+								
+
+						</h:form>
+					</f:facet>
+				</p:toolbar>
+				<p:separator style="border-color:teal;" />
+			</p:layoutUnit>
+
+		<!--  *************************************************************************  -->
+		<!--  *************************** Layout CENTRAL ***************************  -->
+
+			<p:layoutUnit id="principal" position="center" resizable="true">
+						<ui:insert name="content" src="#{pages.mainPanel}">
+							<p>Contenido por defecto... no debería aparecer</p>
+						</ui:insert>
+			</p:layoutUnit>
+
+		<!--  *************************************************************************  -->
+		<!--  *************************** Layout SUR ***************************  -->
+
+			<p:layoutUnit position="south" size="15">
+				<p:separator style="border-color:teal; marging-top:2px" />
+				<!-- p align="right" style="margin-right:25px; margin-top:2px;">Eladio Fernández Barrigüete - PFC - Curso 2015/2016</p> -->
+			</p:layoutUnit>
+			
+			
+
+		</p:layout>
+		
+		
+	</h:body>
+	<script type="text/javascript">
+	  //<![CDATA[
+	  function logout(xhr, status, args) {
+	    setTimeout(function() {window.location = '/CMDBright/faces/login.xhtml';}, 200);
+	  }
+	  //]]>
+	</script>	
+</f:view>
+</html>

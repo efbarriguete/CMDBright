@@ -1,0 +1,211 @@
+<!-- 
+/*****************************************************************************
+ * CMDBright - Clear and nimble Configuration Management DataBase 
+ * Copyright (C) 2016  Eladio Fernández Barrigüete
+ * 
+ * This file is part of CMDBright.
+ * 
+ * CMDBright is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * CMDBright is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with CMDBright.  If not, see <http://www.gnu.org/licenses/>.
+******************************************************************************/
+ -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/facelets/templates/baseTemplate.xhtml">
+
+
+
+<ui:define name="titulo">
+	Tomas
+</ui:define>
+
+
+<ui:define name="content">
+
+	<h2 align="center">Tomas</h2>
+
+	<h:form id="formAdd">
+		<p:growl id="mensajes" for="mensajes" showDetail="true" life="4500" />
+		<p:panel id="panelMain" header="#{vistaToma.headerPanel}" style="margin:20px; border-color:teal;" rendered="#{vistaToma.estadoPanel}" >
+			<p:focus context="panelMain"/>
+			<h:panelGrid columns="3" cellpadding="5">
+			
+				<h:panelGrid id="datosNuevos" columns="3" cellpadding="5">
+	
+					<p:outputLabel for="menuTipoToma" value="Tipo de toma: " />
+					<p:selectOneMenu id="menuTipoToma"  value="#{vistaToma.datosForm.tipoToma}" converter="entityConverter" required="true">
+						<f:selectItem itemLabel="Elige uno" itemValue="" />
+						<f:selectItems value="#{vistaToma.tipoTomas}" var="x" itemLabel="#{x.nombre}" itemValue="#{x}" />
+					</p:selectOneMenu>
+					<p:message for="menuTipoToma" />
+		
+					<p:outputLabel for="menuPatchPanel" value="PatchPanel: " />
+					<p:selectOneMenu id="menuPatchPanel"  value="#{vistaToma.datosForm.patchPanel}" converter="entityConverter" required="true">
+						<f:selectItem itemLabel="Elige uno" itemValue="" />
+						<f:selectItems value="#{vistaToma.patchPanels}" var="x" itemLabel="#{x.nombre}" itemValue="#{x}" />
+					</p:selectOneMenu>
+					<p:message for="menuPatchPanel" />
+		
+					<p:outputLabel value="Toma: " />
+					<p:inputText id="inputNombre" label="Toma" value="#{vistaToma.datosForm.nombre}" required="true" />
+					<p:message for="inputNombre" />
+
+				</h:panelGrid>
+
+
+<!--  					
+					<p:outputLabel for="conecToma" value="Conectar a esta toma:" />
+        			<p:selectOneMenu id="conecToma" value="#{vistaToma.conecOpc}" style="width:125px">
+			            <f:selectItem itemLabel="Elige una opción" itemValue="" />
+			            <f:selectItem itemLabel="Un equipo" itemValue="equip" />
+			            <f:selectItem itemLabel="Una boca de switch" itemValue="bocaSw" />
+			            <f:selectItem itemLabel="Otra toma (puente)" itemValue="toma" />
+			        </p:selectOneMenu>
+			        <p:commandButton id="conecBtn" value="Buscar" update="panelBuscarConec" actionListener="#{vistaToma.buscaConecToma}" icon="fa-arrow-circle-right"/>
+
+					<p:outputLabel for="conecActual" value="Actualmente conectado con:" />
+					<p:inputText id="conecActual" label="Equipo conectado" value="#{vistaToma.datosForm.interfaz}" disabled="true" size="50"/>
+					<p:outputLabel for="conecActual" value="Guardar una variable tipo: vistaToma.datosForm.conectadoAString" />
+
+				<h:panelGrid id="panelBuscarConec" columns="4" cellpadding="5" rendered="#{vistaToma.estadoPanelBuscar}">
+					<p:outputLabel value="Conectar un equipo a esta toma: " />
+			        <p:commandButton id="conectar" value="Conectar" update="panelBuscarConec datosNuevos" actionListener="#{vistaToma.conectar}" icon="fa-arrow-circle-right"/>
+
+				<p:blockUI block="datosNuevos" widgetVar="buiConec"/>
+				</h:panelGrid>
+
+		-->	        
+	
+	
+					
+					
+					
+					
+				
+			</h:panelGrid>
+
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton id="savBtn" value="Guardar NUEVO elemento" process="@this formAdd:datosNuevos" update="formAdd" actionListener="#{vistaToma.grabarDatosNew}" rendered="#{vistaToma.mostrarSavBtn}" style="margin-right:20px;"/>
+					<p:commandButton id="modBtn" value="Guardar modificaciones" process="@this formAdd:datosNuevos formVer:tablaMain" update="formAdd" actionListener="#{vistaToma.grabarDatosMod}" rendered="#{vistaToma.mostrarModBtn}" style="margin-right:20px;"/>
+					<p:commandButton id="delBtn" value="BORRAR elemento" process="@this formAdd:datosNuevos formVer:tablaMain" update="formAdd" actionListener="#{vistaToma.borrar}" rendered="#{vistaToma.mostrarDelBtn}" style="margin-right:20px;"/>
+					<p:commandButton id="cancelBtn" value="Cancelar" process="@this" update="formAdd" actionListener="#{vistaToma.cancelar}" style="margin-right:20px;"/>
+				</f:facet>
+				
+				<f:facet name="right">
+					<p:commandButton id="resetBtn" value="Reset Form" styleClass="ui-priority-primary" process="@this" update="formAdd" actionListener="#{vistaToma.resetForm}" />
+				</f:facet>
+			</p:toolbar>
+				<p:messages id="mensajesAdd" showDetail="true"/>
+		</p:panel>
+
+		<!--  *************************************************************************  -->
+		<!--  *************************** Botones de acción ***************************  -->
+						
+		<p:commandButton id="addBtn" process="@this" update="formAdd formVer" icon="fa fa-plus" value="Añadir Toma"  
+			actionListener="#{vistaToma.add}" disabled="#{vistaToma.btnAddDesactivado}" action="PF('tablaM').unselectAllRows()" />
+		<p:commandButton id="editBtn" process="@this" update="formAdd formVer" icon="fa fa-fw fa-edit" value="Editar Toma"  
+			actionListener="#{vistaToma.edit}" disabled="#{vistaToma.btnEditDesactivado}" action="PF('tablaM').unselectAllRows()" />
+		<p:commandButton id="elimBtn" process="@this" update="formAdd formVer" icon="fa fa-fw fa-remove" value="Borrar Toma"  
+			actionListener="#{vistaToma.eliminar}" disabled="#{vistaToma.btnEditDesactivado}" action="PF('tablaM').unselectAllRows()" />
+
+		<!--  *************************** Fin Botones de acción ***************************  -->
+		<!--  *****************************************************************************  -->
+
+	</h:form>
+
+	
+	
+	
+	
+
+
+
+	<h:form id="formVer">
+		<p:dataTable id="tablaMain" var="toma" value="#{vistaToma.tomas}" widgetVar="tablaM"
+			filteredValue="#{vistaToma.tomasFiltrados}" emptyMessage="Ningún elemento encontrado" 
+			scrollable="true" scrollHeight="#{pages.tamanoScroll}" resizableColumns="true" selectionMode="single" selection="#{vistaToma.seleccionado}" rowKey="#{toma.id}">
+			<p:ajax event="rowSelect" update="formAdd:editBtn formAdd:elimBtn" />
+			<f:facet name="header">
+				<p:outputPanel>
+					<h:outputText value="Buscar en todos los campos: " />
+					<p:inputText id="globalFilter" onkeyup="PF('tablaM').filter()" placeholder="Introduce búsqueda..." style="width:200px"/>
+					<p:commandLink onclick="PF('tablaM').clearFilters()" update="tablaMain" style="margin-left:20px;"><span class="fa-stack"><i class="fa fa-filter fa-stack-1x"/><i class="fa fa-ban fa-stack-2x"/></span></p:commandLink>
+					<p:commandLink actionListener="#{vistaToma.init}" update="formAdd formVer" style="margin-left:20px;"><i class="fa fa-refresh fa-lg"/></p:commandLink>						
+				</p:outputPanel>
+			</f:facet>
+
+		<!--  *************************************************************************  -->
+		<!--  *************************** COLUMNAS ***************************  -->
+
+			<p:column sortBy="#{toma.patchPanel.rack.hueco.nombreArmario}" filterBy="#{toma.patchPanel.rack.hueco.nombreArmario}" filterStyle="display:none" headerText="Armario" style="width:50px">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('tablaM').filter()">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{vistaToma.huecos}" var="x" itemLabel="#{x.nombre}" itemValue="#{x.nombre}"/>
+					</p:selectOneMenu>
+				</f:facet>
+				<h:outputText value="#{toma.patchPanel.rack.hueco.nombreArmario}" />
+			</p:column>
+			
+			<p:column sortBy="#{toma.patchPanel.rack.nombre}" filterBy="#{toma.patchPanel.rack.nombre}" filterStyle="display:none" headerText="Rack" style="width:50px">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('tablaM').filter()">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{vistaToma.racks}" var="x" itemLabel="#{x.nombre}" itemValue="#{x.nombre}"/>
+					</p:selectOneMenu>
+				</f:facet>
+				<h:outputText value="#{toma.patchPanel.rack.nombre}" />
+			</p:column>
+
+			<p:column sortBy="#{toma.patchPanel.nombre}" filterBy="#{toma.patchPanel.nombre}" filterStyle="display:none" headerText="PatchPanel" style="width:50px">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('tablaM').filter()">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{vistaToma.patchPanels}" var="x" itemLabel="#{x.nombre}" itemValue="#{x.nombre}"/>
+					</p:selectOneMenu>
+				</f:facet>
+				<h:outputText value="#{toma.patchPanel.nombre}" />
+			</p:column>
+			
+			<p:column sortBy="#{toma.tipoToma.nombre}" filterBy="#{toma.tipoToma.nombre}" filterStyle="display:none" headerText="Tipo" style="width:50px">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('tablaM').filter()">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{vistaToma.tipoTomas}" var="x" itemLabel="#{x.nombre}" itemValue="#{x.nombre}"/>
+					</p:selectOneMenu>
+				</f:facet>
+				<h:outputText value="#{toma.tipoToma.nombre}" />
+			</p:column>
+			
+			
+			<p:column sortBy="#{toma.nombre}" filterBy="#{toma.nombre}" filterStyle="display:none" headerText="Toma" style="width:300px"> <h:outputText value="#{toma.nombre}"/> </p:column>
+
+		<!--  *************************** FIN COLUMNAS ***************************  -->
+		<!--  *************************************************************************  -->
+
+			<f:facet name="footer">
+				<p:outputLabel value="#{vistaToma.verTotal}" style="margin-left:50px;"/>
+			</f:facet>
+			
+		</p:dataTable>
+		<p:blockUI block="tablaMain" widgetVar="buiFV"/>
+	</h:form>
+</ui:define>
+
+
+</ui:composition>

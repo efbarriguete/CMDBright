@@ -1,0 +1,74 @@
+<!-- 
+/*****************************************************************************
+ * CMDBright - Clear and nimble Configuration Management DataBase 
+ * Copyright (C) 2016  Eladio Fernández Barrigüete
+ * 
+ * This file is part of CMDBright.
+ * 
+ * CMDBright is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * CMDBright is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with CMDBright.  If not, see <http://www.gnu.org/licenses/>.
+******************************************************************************/
+ -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/facelets/templates/baseTemplate.xhtml">
+
+	<ui:define name="titulo">
+        Sobre este proyecto...
+    </ui:define>
+
+
+	<ui:define name="content">
+		<p:outputPanel id="outputPanel">
+			<center>
+				<br/><br/><br/>
+				<h2> Aplicación CMDBright para la Gestión de la configuración </h2>
+				<p:separator style="border-color:teal; width:500px" />
+				<br/><br/>
+<!--  				<h3> Copyright (C)  2016  Eladio Fernández Barrigüete </h3>
+				<p> Permission is granted to copy, distribute and/or modify this software <br/>
+					under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE, Version 3 <br/> 
+					or any later version published by the Free Software Foundation
+				</p>
+--> 
+				<h3> CMDBright - Clear and nimble Configuration Management DataBase <br/> 
+				Copyright (C) 2016  Eladio Fernández Barrigüete
+				</h3>
+				<p> This file is part of CMDBright. <br/><br/>
+				
+				CMDBright is free software: you can redistribute it and/or modify<br/>
+				it under the terms of the GNU Affero General Public License as published by<br/>
+				the Free Software Foundation, either version 3 of the License, or<br/>
+				(at your option) any later version.<br/><br/>
+				
+				CMDBright is distributed in the hope that it will be useful,<br/>
+				but WITHOUT ANY WARRANTY; without even the implied warranty of<br/>
+				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br/>
+				GNU Affero General Public License for more details.<br/><br/>
+				
+				You should have received a copy of the GNU Affero General Public License<br/>
+				along with CMDBright.  If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.<br/>
+				</p>
+				
+				<br/><br/><br/>
+				<img src="#{request.contextPath}/resources/img/agpl.png" alt="GNU Affero General Public License v.3" />
+				
+			</center>
+		</p:outputPanel>
+		
+	</ui:define>
+
+</ui:composition>

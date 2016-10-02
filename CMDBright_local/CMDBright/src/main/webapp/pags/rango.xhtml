@@ -1,0 +1,126 @@
+<!-- 
+/*****************************************************************************
+ * CMDBright - Clear and nimble Configuration Management DataBase 
+ * Copyright (C) 2016  Eladio Fernández Barrigüete
+ * 
+ * This file is part of CMDBright.
+ * 
+ * CMDBright is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * CMDBright is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with CMDBright.  If not, see <http://www.gnu.org/licenses/>.
+******************************************************************************/
+ -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/facelets/templates/baseTemplate.xhtml">
+
+
+
+<ui:define name="titulo">
+	Rangos de IP
+</ui:define>
+
+
+<ui:define name="content">
+
+	<h2 align="center">Rangos de IP</h2>
+
+	<h:form id="formAdd">
+		<p:growl id="mensajes" for="mensajes" showDetail="true" life="4500" />
+		<p:panel id="panelMain" header="#{vistaRango.headerPanel}" style="margin:20px; border-color:teal;" rendered="#{vistaRango.estadoPanel}" >
+			<p:focus context="panelMain"/>
+			<h:panelGrid id="datosNuevos" columns="3" cellpadding="5">
+	
+				<p:outputLabel value="Rango: " />
+				<p:inputText id="inputNombre" label="Rango" value="#{vistaRango.datosForm.nombre}" required="true" />
+				<p:message for="inputNombre" />
+
+				<p:outputLabel value="Descripción: " />
+				<p:inputText id="inputDescrip" label="Descripción" value="#{vistaRango.datosForm.descrip}" size="50"/>
+				<p:message for="inputDescrip" />
+
+			</h:panelGrid>
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton id="savBtn" value="Guardar NUEVO elemento" process="@this formAdd:datosNuevos" update="formAdd" actionListener="#{vistaRango.grabarDatosNew}" rendered="#{vistaRango.mostrarSavBtn}" style="margin-right:20px;"/>
+					<p:commandButton id="modBtn" value="Guardar modificaciones" process="@this formAdd:datosNuevos formVer:tablaMain" update="formAdd" actionListener="#{vistaRango.grabarDatosMod}" rendered="#{vistaRango.mostrarModBtn}" style="margin-right:20px;"/>
+					<p:commandButton id="delBtn" value="BORRAR elemento" process="@this formAdd:datosNuevos formVer:tablaMain" update="formAdd" actionListener="#{vistaRango.borrar}" rendered="#{vistaRango.mostrarDelBtn}" style="margin-right:20px;"/>
+					<p:commandButton id="cancelBtn" value="Cancelar" process="@this" update="formAdd" actionListener="#{vistaRango.cancelar}" style="margin-right:20px;"/>
+				</f:facet>
+				
+				<f:facet name="right">
+					<p:commandButton id="resetBtn" value="Reset Form" styleClass="ui-priority-primary" process="@this" update="formAdd" actionListener="#{vistaRango.resetForm}" />
+				</f:facet>
+			</p:toolbar>
+				<p:messages id="mensajesAdd" showDetail="true"/>
+		</p:panel>
+
+		<!--  *************************************************************************  -->
+		<!--  *************************** Botones de acción ***************************  -->
+						
+		<p:commandButton id="addBtn" process="@this" update="formAdd formVer" icon="fa fa-plus" value="Añadir Rango"  
+			actionListener="#{vistaRango.add}" disabled="#{vistaRango.btnAddDesactivado}" action="PF('tablaM').unselectAllRows()" />
+		<p:commandButton id="editBtn" process="@this" update="formAdd formVer" icon="fa fa-fw fa-edit" value="Editar Rango"  
+			actionListener="#{vistaRango.edit}" disabled="#{vistaRango.btnEditDesactivado}" action="PF('tablaM').unselectAllRows()" />
+		<p:commandButton id="elimBtn" process="@this" update="formAdd formVer" icon="fa fa-fw fa-remove" value="Borrar Rango"  
+			actionListener="#{vistaRango.eliminar}" disabled="#{vistaRango.btnEditDesactivado}" action="PF('tablaM').unselectAllRows()" />
+
+		<!--  *************************** Fin Botones de acción ***************************  -->
+		<!--  *****************************************************************************  -->
+
+	</h:form>
+
+	
+	
+	
+	
+
+
+
+	<h:form id="formVer">
+		<p:dataTable id="tablaMain" var="rango" value="#{vistaRango.rangos}" widgetVar="tablaM"
+			filteredValue="#{vistaRango.rangosFiltrados}" emptyMessage="Ningún elemento encontrado" 
+			scrollable="true" scrollHeight="#{pages.tamanoScroll}" resizableColumns="true" selectionMode="single" selection="#{vistaRango.seleccionado}" rowKey="#{rango.id}">
+			<p:ajax event="rowSelect" update="formAdd:editBtn formAdd:elimBtn" />
+			<f:facet name="header">
+				<p:outputPanel>
+					<h:outputText value="Buscar en todos los campos: " />
+					<p:inputText id="globalFilter" onkeyup="PF('tablaM').filter()" placeholder="Introduce búsqueda..." style="width:200px"/>
+					<p:commandLink onclick="PF('tablaM').clearFilters()" update="tablaMain" style="margin-left:20px;"><span class="fa-stack"><i class="fa fa-filter fa-stack-1x"/><i class="fa fa-ban fa-stack-2x"/></span></p:commandLink>
+					<p:commandLink actionListener="#{vistaRango.init}" update="formAdd formVer" style="margin-left:20px;"><i class="fa fa-refresh fa-lg"/></p:commandLink>						
+				</p:outputPanel>
+			</f:facet>
+
+		<!--  *************************************************************************  -->
+		<!--  *************************** COLUMNAS ***************************  -->
+			
+			<p:column sortBy="#{rango.nombre}" filterBy="#{rango.nombre}" filterStyle="display:none" headerText="Rango" style="width:300px"> <h:outputText value="#{rango.nombre}"/> </p:column>
+			<p:column sortBy="#{rango.descrip}" filterBy="#{rango.descrip}" filterStyle="display:none" headerText="Descripción"> <h:outputText value="#{rango.descrip}" /> </p:column>
+
+		<!--  *************************** FIN COLUMNAS ***************************  -->
+		<!--  *************************************************************************  -->
+
+			<f:facet name="footer">
+				<p:outputLabel value="#{vistaRango.verTotal}" style="margin-left:50px;"/>
+			</f:facet>
+			
+		</p:dataTable>
+		<p:blockUI block="tablaMain" widgetVar="buiFV"/>
+	</h:form>
+</ui:define>
+
+
+</ui:composition>

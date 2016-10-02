@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="
+      http://www.springframework.org/schema/beans 
+      http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+      http://www.springframework.org/schema/security 
+      http://www.springframework.org/schema/security/spring-security-4.1.xsd">
+<!-- 
+/*****************************************************************************
+ * CMDBright - Clear and nimble Configuration Management DataBase 
+ * Copyright (C) 2016  Eladio Fernández Barrigüete
+ * 
+ * This file is part of CMDBright.
+ * 
+ * CMDBright is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * CMDBright is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with CMDBright.  If not, see <http://www.gnu.org/licenses/>.
+******************************************************************************/
+ -->
+
+	<!-- en el web.xml tienes que incluir este fichero en el contextConfigLocation. 
+		ASÍ: -->
+
+	<!-- <context-param> <param-name>contextConfigLocation</param-name> <param-value> 
+		/WEB-INF/bean-context.xml /WEB-INF/dao-context.xml /WEB-INF/mail-context.xml 
+		/WEB-INF/security-context.xml </param-value> </context-param> -->
+
+
+	<!-- ESTO SERÍA EN PLANO -->
+
+	<security:authentication-manager>
+		<security:authentication-provider>
+			<security:user-service>
+				<security:user name="Rober"
+					authorities="ROLE_ADMIN, ROLE_GXFE_USR_GACELA_AICC_PRE" password="rrr" />
+				<security:user name="Eladio" authorities="ROLE_ADMIN"
+					password="eee" />
+			</security:user-service>
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+
+	<!-- AQUÍ LA AUTORIZACIÓN: EL hasRole comprueba el rol, tienes también el 
+		metodo isAuthenticated() que lo único que hace es comprobar si esta autenticado. -->
+	<!-- EN LOS INTERCEPT-URL EL ORDEN IMPORTA. -->
+
+	
+	<security:http auto-config="true" use-expressions="true">
+
+		<security:intercept-url pattern="/**" access="permitAll" />
+		<security:intercept-url pattern="/resources/**"	access="permitAll" />
+		<security:intercept-url pattern="/index.xhtml"	access="permitAll" />
+		<security:intercept-url pattern="/login.xhtml"	access="permitAll" />
+		<security:intercept-url pattern="/pags/**"	access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/*" access="denyAll" />
+
+		<security:form-login login-processing-url="/j_spring_security_check"
+			login-page="/login.xhtml" default-target-url="/index.xhtml"
+			authentication-failure-url="/login.xhtml?login_error=true"/>
+
+		<!-- Se incluye esto para gestionar la redirección del logout -->
+		<security:logout logout-url="/j_spring_security_logout" logout-success-url="/index.xhtml" 
+			invalidate-session="true" delete-cookies="JSESSIONID" />
+	</security:http>
+</beans>

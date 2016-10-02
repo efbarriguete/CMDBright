@@ -1,0 +1,82 @@
+/*****************************************************************************
+ * CMDBright - Clear and nimble Configuration Management DataBase 
+ * Copyright (C) 2016  Eladio Fernández Barrigüete
+ * 
+ * This file is part of CMDBright.
+ * 
+ * CMDBright is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * CMDBright is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with CMDBright.  If not, see <http://www.gnu.org/licenses/>.
+******************************************************************************/
+
+/*****************/
+/*   MAIN BODY   */
+/*****************/
+
+body {
+	font-size: 65%;
+	margin: 0em auto;
+	padding: 0em;
+	/*background: url(../img/img_background.gif) top center repeat-y;*/
+	font-family: Verdana,Tahoma, Arial,sans-serif;
+}
+
+
+/* Para cambiar la ubicacion de los mensajes con growl: */
+.ui-growl{
+	position: fixed;
+	top: 130px;
+	right: 25px;
+	width: 295px;
+}
+
+/* Para eliminar el scroll del layoutUnit*/
+.ui-layout-unit .ui-layout-unit-content {
+	padding: 0.2em 0em;
+	border: 0px none;
+	overflow: hidden;
+}
+
+/* Para cambiar la apariencia del dialog al que le ponga este estilo: 
+.dialogCSS {
+    font-size: 65% !important;
+    margin: 0em auto;
+    padding: 0em;
+    font-family: Verdana,Tahoma, Arial,sans-serif;
+} 
+*/
+
+/* Para cambiar la apariencia del dialog de forma global: .ui-dialog .ui-dialog-content .ui-widget .ui-widget-content .ui-dialog-title .ui-widget-header .ui-button-text .ui-column-title */
+
+/*.ui-dialog .ui-dialog-titlebar .ui-dialog-title .ui-dialog-titlebar-close .ui-dialog-content .ui-widget .ui-widget-content 
+
+.ui-dialog .ui-dialog {
+    font-size: 65%;
+    margin: 0em auto;
+    padding: 0em;
+    font-family: Verdana,Tahoma, Arial,sans-serif;
+}
+
+.ui-widget,.ui-widget-header,.ui-widget-content,.ui-widget-header .ui-widget-header,.ui-widget-content .ui-widget-content,.ui-widget input,.ui-widget select,.ui-widget textarea,.ui-widget button {
+    font-size: 65%;
+}
+
+
+.ui-dialog .ui-dialog-titlebar .ui-dialog-title-dialog .ui-dialog-titlebar-close .ui-dialog-content {
+    font-size: 0.65% !important;
+}
+*/
+
+/* recomendado por primefaces: ... tendré que quitar el cambio de fuente hecho en body ---- TAMPOCO FUNCIONA, PREFIERO EL EFECTO DESDE BODY ... 
+.ui-widget,.ui-widget-header,.ui-widget-content,.ui-widget-header .ui-widget-header,.ui-widget-content .ui-widget-content,.ui-widget input,.ui-widget select,.ui-widget textarea,.ui-widget button {
+	font-size: 85%;
+}*/

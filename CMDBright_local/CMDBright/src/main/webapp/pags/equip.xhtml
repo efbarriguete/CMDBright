@@ -1,0 +1,359 @@
+<!-- 
+/*****************************************************************************
+ * CMDBright - Clear and nimble Configuration Management DataBase 
+ * Copyright (C) 2016  Eladio Fernández Barrigüete
+ * 
+ * This file is part of CMDBright.
+ * 
+ * CMDBright is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * CMDBright is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with CMDBright.  If not, see <http://www.gnu.org/licenses/>.
+******************************************************************************/
+ -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/facelets/templates/baseTemplate.xhtml">
+
+
+
+<ui:define name="titulo">
+	Equipamiento
+</ui:define>
+
+
+<ui:define name="content">
+
+	<h2 align="center">Equipamiento</h2>
+
+	<h:form id="formAdd">
+		<p:defaultCommand target="#{vistaEquip.btnPorDefecto}" />
+		<p:growl id="mensajes" for="mensajes" showDetail="true" life="4500" />
+		<p:panel id="panelMain" header="#{vistaEquip.headerPanel}" style="margin:20px; border-color:teal;" rendered="#{vistaEquip.estadoPanel}" >
+			<p:focus context="panelMain"/>
+			<h:panelGrid columns = "3" cellpadding="5">
+				<p:panel style="width:500px">
+				<h:panelGrid id="datosNuevos" columns="3" cellpadding="3">
+				<!--  f:facet name="header"> <p:outputLabel value="Datos generales" style="text-align:left"/></f:facet> -->
+		
+					<p:outputLabel for="menuModel" value="Modelo: " />
+					<p:selectOneMenu id="menuModel"  value="#{vistaEquip.datosForm.model}" converter="entityConverter" required="true">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" />
+						<f:selectItems value="#{vistaEquip.models}" var="x" itemLabel="#{x.nombre}" itemValue="#{x}" />
+					</p:selectOneMenu>
+					<p:message for="menuModel" />
+
+					<p:outputLabel for="menuEstadoEquip" value="Estado equipamiento: " />
+					<p:selectOneMenu id="menuEstadoEquip"  value="#{vistaEquip.datosForm.estadoEquip}" converter="entityConverter" required="true">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" />
+						<f:selectItems value="#{vistaEquip.estados}" var="x" itemLabel="#{x.nombre}" itemValue="#{x}" />
+					</p:selectOneMenu>
+					<p:message for="menuEstadoEquip" />
+					
+					<p:outputLabel value="Nombre de equipo: " for="inputNombre" />
+					<p:inputText id="inputNombre" label="Nombre de equipo" value="#{vistaEquip.datosForm.nombre}" />
+					<p:message for="inputNombre" />
+	
+					<p:outputLabel value="Etiqueta SERGAS: " for="inputSergas"/>
+					<p:inputText id="inputSergas" label="Etiqueta SERGAS" value="#{vistaEquip.datosForm.etSergas}"/>
+					<p:message for="inputSergas" />
+	
+					<p:outputLabel value="Nº Serie: " for="inputSerial"/>
+					<p:inputText id="inputSerial" label="Nº Serie" value="#{vistaEquip.datosForm.serialNum}"/>
+					<p:message for="inputSerial" />
+	
+			        <p:outputLabel for="inputDateRecept" value="Fecha recepción:" />
+			        <p:calendar id="inputDateRecept" label="Fecha recepción" value="#{vistaEquip.datosForm.fechaRecepcion}" />
+					<p:message for="inputDateRecept" />
+	
+			        <p:outputLabel for="inputDateGarant" value="Fecha fin de garantía:" />
+			        <p:calendar id="inputDateGarant" label="Fecha fin de garantía" value="#{vistaEquip.datosForm.fechaFinGarantia}" />
+					<p:message for="inputDateGarant" />
+	
+					<p:outputLabel value="Observaciones: " for="inputObs"/>
+					<p:inputTextarea id="inputObs" label="Observaciones" value="#{vistaEquip.datosForm.observaciones}" rows="4" cols="20" autoResize="false" style="resize: none"/>
+					<p:message for="inputObs" />
+	
+				</h:panelGrid>
+				</p:panel>
+				
+		<!--  *****************************************************************************  -->
+		<!--  *****************************************************************************  -->
+		<!--  *****************************************************************************  -->
+		<!-- COLUMNA DE LA DERECHA para recoger datos: (estado de equip, interfaces, ubicación...) -->
+				<p:panel id="otrosDatos" style="width:520px">
+					
+					<p:panel header="Asignación">
+						<h:panelGrid columns="3" cellpadding="5">
+							<p:outputLabel for="menuServicio" value="Servicio: " />
+							<p:selectOneMenu id="menuServicio"  value="#{vistaEquip.datosForm.servicio}" converter="entityConverter">
+								<p:ajax update="descripServicio"/>
+								<f:selectItem itemLabel="Elige uno" itemValue="#{null}" />
+								<f:selectItems value="#{vistaEquip.servicios}" var="x" itemLabel="#{x.gfh}" itemValue="#{x}" />
+							</p:selectOneMenu>
+							<p:outputLabel id="descripServicio" for="menuServicio" value="#{vistaEquip.datosForm.servicio.nombre}" />
+
+							<p:outputLabel for="menuHueco" value="Hueco: " />
+							<p:selectOneMenu id="menuHueco"  value="#{vistaEquip.datosForm.hueco}" converter="entityConverter">
+								<p:ajax update="descripHueco"/>
+								<f:selectItem itemLabel="Elige uno" itemValue="#{null}" />
+								<f:selectItems value="#{vistaEquip.huecos}" var="x" itemLabel="#{x.nombre}" itemValue="#{x}" />
+							</p:selectOneMenu>
+							<p:outputLabel id="descripHueco" for="menuHueco" value="#{vistaEquip.datosForm.hueco.descrip}" />
+						</h:panelGrid>
+					</p:panel>
+
+					<p:panel header="Suministro">
+						<h:panelGrid columns="3" cellpadding="5">
+							<p:outputLabel for="menuSuministro" value="Operación: " />
+							<p:selectOneMenu id="menuSuministro"  value="#{vistaEquip.datosForm.operacion}" converter="entityConverter">
+								<p:ajax update="detallesOperacion"/>
+								<f:selectItem itemLabel="Elige uno" itemValue="#{null}" />
+								<f:selectItems value="#{vistaEquip.operacions}" var="x" itemLabel="#{x.numOperacion}" itemValue="#{x}" />
+							</p:selectOneMenu>
+							<p:outputLabel id="detallesOperacion" value="#{vistaEquip.datosForm.operacion.detalles}" />
+						</h:panelGrid>
+					</p:panel>
+
+					<!-- Panel "panelInterfazs" Interfaces de red -->
+					<p:panel id="panelInterfazs">
+					<p:focus context="panelInterfazs"/>
+						<f:facet name ="header">
+							<p:outputLabel value="Interfaces de red: "/>
+							<p:toolbar>
+								<f:facet name="left">
+									<p:commandButton id="newInterfazBtn" title="Agregar interfaz" icon="fa fa-plus" process="@this" update="panelInterfazs" actionListener="#{vistaEquip.newInterfaz}"/>
+									<p:commandButton id="modInterfazBtn" title="Modificar interfaz seleccionada" icon="fa fa-edit" process="panelInterfazs" update="panelInterfazs" actionListener="#{vistaEquip.modInterfaz}" disabled="#{vistaEquip.noHayInterfazSeleccionada}"/>
+									<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical" /></span>
+									<p:commandButton id="delInterfazBtn" title="Borrar interfaz seleccionada" icon="fa fa-times" process="@this" update="panelInterfazs" actionListener="#{vistaEquip.delInterfaz}" disabled="#{vistaEquip.noHayInterfazSeleccionada}">
+										<p:confirm header="Confirmación de borrado de interfaz" message="¿Estás seguro?" icon="fa fa-warning" />
+									</p:commandButton>
+								</f:facet>
+								<f:facet name="right">
+									<p:splitButton id="connInterfazBtn" value="Conectar a" title="Conectar interfaz seleccionada" icon="fa fa-exchange" disabled="#{vistaEquip.noHayInterfazSeleccionada}">
+								        <p:menuitem value="Toma" process="@this" actionListener="#{vistaEquip.inicializaDialog}" />
+								        <p:menuitem value="Boca-SW" disabled="true"/>
+								        <p:separator />
+								        <p:menuitem value="Desconectar..." process="@this" update="formAdd:panelInterfazs" actionListener="#{vistaEquip.desconectaInterfaz}" />
+								    </p:splitButton>
+								</f:facet>
+							</p:toolbar>
+						</f:facet>
+						
+						<!-- Confirmación de borrado -->
+						<p:confirmDialog global="true"> <!-- showEffect="fade" hideEffect="fade" -->
+							<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+							<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-close" />
+						</p:confirmDialog>
+						<!-- Confirmación de borrado -->
+												
+						<p:panelGrid id="panelNewInterfaz" columns="4" cellpadding="1" rendered="#{vistaEquip.mostrarInterfazForm}">
+							<p:inputMask id="inputMac" mask="**-**-**-**-**-**" value="#{vistaEquip.interfaz.mac}" placeholder="MAC" label="MAC de la interfaz" style="width:95px"/>
+							<p:selectOneMenu id="menuRango" value="#{vistaEquip.rango}" converter="entityConverter" autoWidth="false" style="width:60px">
+								<p:ajax listener="#{vistaEquip.onChangeRango}" update="menuIP" />
+								<f:selectItem itemLabel="Elige rango" itemValue="#{null}" noSelectionOption="false"/>
+								<f:selectItems value="#{vistaEquip.rangos}" var="x" itemLabel="#{x.nombre}" itemValue="#{x}"/>
+							</p:selectOneMenu>
+							<p:selectOneMenu id="menuIP" value="#{vistaEquip.interfaz.ip}" converter="entityConverter" autoWidth="false" style="width:75px">
+								<f:selectItem itemLabel="Selecciona IP" itemValue="#{null}" noSelectionOption="false" />
+								<f:selectItems value="#{vistaEquip.ips}" var="x" itemLabel="#{x.ip}" itemValue="#{x}" />
+							</p:selectOneMenu>
+							<p:toolbar>
+								<f:facet name="left">
+									<p:commandButton id="savInterfazNewBtn" title="Guardar interfaz nueva" icon="fa fa-save" process="formAdd:panelNewInterfaz" update="formAdd:panelInterfazs" actionListener="#{vistaEquip.savInterfazNew}" rendered="#{vistaEquip.mostrarSavInterfazNew}"/>
+									<p:commandButton id="savInterfazModBtn" title="Guardar modificaciones" icon="fa fa-save" process="formAdd:panelNewInterfaz" update="formAdd:panelInterfazs" actionListener="#{vistaEquip.savInterfazMod}" rendered="#{vistaEquip.mostrarSavInterfazMod}"/>
+									<span class="ui-separator"><span class="ui-icon ui-icon-grip-dotted-vertical" /></span>
+									<p:commandButton id="cancelInterfazBtn" title="Cancelar" icon="fa fa-ban" process="@this" update="formAdd:panelInterfazs" actionListener="#{vistaEquip.cancelInterfaz}"/>
+								</f:facet>
+							</p:toolbar>
+						</p:panelGrid>
+						
+
+						<p:dataTable id="tablaInterfazs" var="interfaz" value="#{vistaEquip.datosForm.interfazs}" widgetVar="tablaInterfazsWV" emptyMessage="Ninguna interfaz configurada"
+						 	scrollable="true" scrollHeight="60" selectionMode="single" selection="#{vistaEquip.iSeleccionada}" rowKey="#{interfaz.id}">
+							<p:ajax event="rowSelect" update="formAdd:modInterfazBtn formAdd:delInterfazBtn formAdd:connInterfazBtn"/>
+						
+			<!--  *************************************************************************  -->
+			<!--  *************************** COLUMNAS ***************************  -->
+							<p:column headerText="MAC" style="width:60px"> <h:outputText value="#{interfaz.mac}"/> </p:column>
+							<p:column headerText="Rango" style="width:60px" > <h:outputText value="#{interfaz.ip.rango.nombre}"/> </p:column>
+							<p:column headerText="IP" style="width:60px"> <h:outputText value="#{interfaz.ip.ip}"/> </p:column>
+							<p:column headerText="Conectado a toma:" style="width:60px"> <h:outputText value="#{interfaz.toma.nombre}"/> </p:column>
+						</p:dataTable>
+					</p:panel> <!-- fin panel "panelInterfazs" -->
+					
+					
+					<!-- Seleccionar conexión TOMA -->
+					<p:dialog id ="connInterfazId" header="Conectar interfaz a toma: " widgetVar="connInterfazDlg" minheight="200" >
+						<h:panelGrid id="connIntTom" columns="2" cellpadding="5">
+							<p:outputLabel for="menuArmario" value="Armario de datos: " />
+							<p:selectOneMenu id="menuArmario" value="#{vistaEquip.hueco}" converter="entityConverter" style="width:50">
+								<p:ajax listener="#{vistaEquip.onChangeHueco}" update="menuToma" />
+								<f:selectItem itemLabel="Elige armario" itemValue="#{null}" noSelectionOption="false" />
+								<f:selectItems value="#{vistaEquip.huecos}" var="x" itemLabel="#{x.nombreArmario}" itemValue="#{x}" />
+							</p:selectOneMenu>
+							<p:outputLabel for="menuToma" value="Toma: " />
+							<p:selectOneMenu id="menuToma" value="#{vistaEquip.toma}" converter="entityConverter" style="width:50" required="true">
+								<f:selectItem itemLabel="Selecciona toma" itemValue="#{null}" noSelectionOption="false" />
+								<f:selectItems value="#{vistaEquip.tomas}" var="x" itemLabel="#{x.nombre}" itemValue="#{x}" />
+							</p:selectOneMenu>
+							
+							<p:commandButton id="savConn" value="Seleccionar toma" icon="fa fa-check" process="formAdd:connIntTom formAdd:panelInterfazs" update="formAdd:panelInterfazs" actionListener="#{vistaEquip.conectaInterfaz}" /> <!-- actionListener="#{vistaEquip.savInterfazMod}" -->
+							<p:commandButton id="cancelConn" value="Cancelar" icon="fa fa-ban" type="button" onclick="PF('connInterfazDlg').hide();"/>
+							
+						</h:panelGrid>
+					</p:dialog>   
+					<!-- Seleccionar conexión TOMA -->
+					
+						
+					
+
+
+				</p:panel>	<!-- fin panel "otrosDatos" -->	
+		<!-- FIN del PANEL DE LA DERECHA -->
+
+		<!--  *****************************************************************************  -->
+		<!--  *****************************************************************************  -->
+		<!--  *****************************************************************************  -->
+
+		<!-- PANEL botones especiales -->
+				<p:panel > <!-- style="margin-right:100px" -->
+					<p:commandButton id="especialesBtn" value="Funciones especiales" type="button" icon="fa fa-magic" disabled="#{vistaEquip.btnEspecialesDesactivado}" />
+					<p:menu overlay="true" toggleable="true" trigger="especialesBtn" my="center top" at="center bottom">
+						<p:submenu label="Movimientos">
+							<p:menuitem value="Intercambio de Equipamiento" actionListener="#{vistaEquip.intercambio}" />
+							<p:menuitem value="Enviar a almacén" actionListener="#{vistaEquip.intercambio}" />
+						</p:submenu>
+						<p:submenu label="Incidencias">
+							<p:menuitem value="Generar incidencia" actionListener="#{vistaEquip.intercambio}" />
+						</p:submenu>
+					</p:menu>
+				</p:panel>
+		<!-- FIN del PANEL botones especiales -->
+
+
+		<!--  *****************************************************************************  -->
+		<!--  *****************************************************************************  -->
+		<!--  *****************************************************************************  -->
+
+
+		<!--  *************************** Botones ACTIVAR formulario equipamiento ***************************  -->
+			</h:panelGrid>
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton id="savBtn" value="Guardar NUEVO elemento" process="@this formAdd:datosNuevos" update="formAdd" actionListener="#{vistaEquip.grabarDatosNew}" rendered="#{vistaEquip.mostrarSavBtn}" style="margin-right:20px;"/>
+					<p:commandButton id="modBtn" value="Guardar modificaciones" process="@this formAdd:datosNuevos formVer:tablaMain" update="formAdd" actionListener="#{vistaEquip.grabarDatosMod}" rendered="#{vistaEquip.mostrarModBtn}" style="margin-right:20px;"/>
+					<p:commandButton id="delBtn" value="BORRAR elemento" process="@this formAdd:datosNuevos formVer:tablaMain" update="formAdd" actionListener="#{vistaEquip.borrar}" rendered="#{vistaEquip.mostrarDelBtn}" style="margin-right:20px;">
+						<p:confirm header="Confirmación de borrado de equipamiento" message="¿Estás seguro?" icon="ui-icon-alert" />
+					</p:commandButton>
+					<p:commandButton id="cancelBtn" value="Cancelar" process="@this" update="formAdd" actionListener="#{vistaEquip.cancelar}" style="margin-right:20px;"/>
+				</f:facet>
+				
+				<f:facet name="right">
+					<p:commandButton id="resetBtn" value="Reset Form" styleClass="ui-priority-primary" process="@this" update="formAdd" actionListener="#{vistaEquip.resetForm}" />
+				</f:facet>
+			</p:toolbar>
+				<p:messages id="mensajesAdd" showDetail="true"/>
+		</p:panel>
+		<!--  *************************** FIN Botones ACTIVAR formulario equipamiento ***************************  -->
+
+
+		<!--  *************************************************************************  -->
+		<!--  *************************** Botones de acción ***************************  -->
+						
+		<p:commandButton id="addBtn" process="@this" update="formAdd formVer" icon="fa fa-plus" value="Añadir Equip"  
+			actionListener="#{vistaEquip.add}" disabled="#{vistaEquip.btnAddDesactivado}" action="PF('tablaM').unselectAllRows()" />
+		<p:commandButton id="editBtn" process="@this" update="formAdd formVer" icon="fa fa-fw fa-edit" value="Editar Equip"  
+			actionListener="#{vistaEquip.edit}" disabled="#{vistaEquip.btnEditDesactivado}" action="PF('tablaM').unselectAllRows()" />
+		<p:commandButton id="elimBtn" process="@this" update="formAdd formVer" icon="fa fa-fw fa-remove" value="Borrar Equip"  
+			actionListener="#{vistaEquip.eliminar}" disabled="#{vistaEquip.btnEditDesactivado}" action="PF('tablaM').unselectAllRows()"/>
+				
+
+		<!--  *************************** Fin Botones de acción ***************************  -->
+		<!--  *****************************************************************************  -->
+		<p:blockUI block="panelInterfazs" widgetVar="buiPanelInterfazs"/>
+
+	</h:form>
+
+	
+	
+	
+	
+
+
+
+	<h:form id="formVer">
+		<p:dataTable id="tablaMain" var="equip" value="#{vistaEquip.equips}" widgetVar="tablaM"
+			filteredValue="#{vistaEquip.equipsFiltrados}" emptyMessage="Ningún elemento encontrado" 
+			scrollable="true" scrollHeight="#{pages.tamanoScroll}" resizableColumns="true" selectionMode="single" selection="#{vistaEquip.seleccionado}" rowKey="#{equip.id}">
+			<p:ajax event="rowSelect" update="formAdd:editBtn formAdd:elimBtn" />
+			<f:facet name="header">
+				<p:outputPanel>
+					<h:outputText value="Buscar en todos los campos: " />
+					<p:inputText id="globalFilter" onkeyup="PF('tablaM').filter()" placeholder="Introduce búsqueda..." style="width:200px"/>
+					<p:commandLink onclick="PF('tablaM').clearFilters()" update="tablaMain" style="margin-left:20px;"><span class="fa-stack"><i class="fa fa-filter fa-stack-1x"/><i class="fa fa-ban fa-stack-2x"/></span></p:commandLink>
+					<p:commandLink actionListener="#{vistaEquip.init}" update="formAdd formVer" style="margin-left:20px;"><i class="fa fa-refresh fa-lg"/></p:commandLink>						
+				</p:outputPanel>
+			</f:facet>
+
+		<!--  *************************************************************************  -->
+		<!--  *************************** COLUMNAS ***************************  -->
+			<p:column sortBy="#{equip.model.tipoModel.nombre}" filterBy="#{equip.model.tipoModel.nombre}" filterStyle="display:none" headerText="Tipo" style="width:50px">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('tablaM').filter()">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{vistaEquip.tipoModels}" var="x" itemLabel="#{x.nombre}" itemValue="#{x.nombre}"/>
+					</p:selectOneMenu>
+				</f:facet>
+				<h:outputText value="#{equip.model.tipoModel.nombre}" />
+			</p:column>
+			
+			<p:column sortBy="#{equip.model.fabricante.nombre}" filterBy="#{equip.model.fabricante.nombre}" filterStyle="display:none" headerText="Fabricante" style="width:50px">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('tablaM').filter()">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{vistaEquip.fabricantes}" var="x" itemLabel="#{x.nombre}" itemValue="#{x.nombre}"/>
+					</p:selectOneMenu>
+				</f:facet>
+				<h:outputText value="#{equip.model.fabricante.nombre}" />
+			</p:column>
+			
+			<p:column sortBy="#{equip.model.nombre}" filterBy="#{equip.model.nombre}" filterStyle="display:none" headerText="Modelo" style="width:120px">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('tablaM').filter()">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{vistaEquip.models}" var="x" itemLabel="#{x.nombre}" itemValue="#{x.nombre}"/>
+					</p:selectOneMenu>
+				</f:facet>
+				<h:outputText value="#{equip.model.nombre}" />
+			</p:column>
+			
+			<p:column sortBy="#{equip.nombre}" filterBy="#{equip.nombre}" filterStyle="display:none" headerText="Nombre AD" style="width:80px"> <h:outputText value="#{equip.nombre}"/> </p:column>
+			<p:column sortBy="#{equip.etSergas}" filterBy="#{equip.etSergas}" filterStyle="display:none" headerText="Et. SERGAS" style="width:80px"> <h:outputText value="#{equip.etSergas}" /> </p:column>
+			<p:column sortBy="#{equip.serialNum}" filterBy="#{equip.serialNum}" filterStyle="display:none" headerText="Nº serie" style="width:80px"> <h:outputText value="#{equip.serialNum}" /> </p:column>
+
+		<!--  *************************** FIN COLUMNAS ***************************  -->
+		<!--  *************************************************************************  -->
+
+			<f:facet name="footer">
+				<p:outputLabel value="#{vistaEquip.verTotal}" style="margin-left:50px;"/>
+			</f:facet>
+			
+		</p:dataTable>
+		<p:blockUI block="tablaMain" widgetVar="buiFV"/>
+	</h:form>
+</ui:define>
+
+
+</ui:composition>

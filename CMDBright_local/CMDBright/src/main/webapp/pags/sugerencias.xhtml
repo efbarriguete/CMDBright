@@ -1,0 +1,53 @@
+<!-- 
+/*****************************************************************************
+ * CMDBright - Clear and nimble Configuration Management DataBase 
+ * Copyright (C) 2016  Eladio Fernández Barrigüete
+ * 
+ * This file is part of CMDBright.
+ * 
+ * CMDBright is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * CMDBright is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with CMDBright.  If not, see <http://www.gnu.org/licenses/>.
+******************************************************************************/
+ -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/facelets/templates/baseTemplate.xhtml">
+
+	<ui:define name="titulo">
+        Sugerencias
+    </ui:define>
+
+
+	<ui:define name="content">
+		<p:outputPanel id="outputPanel">
+			<center>
+				<h:form> 
+				    <p:growl id="growl" showDetail="true" sticky="true" />  
+				 
+				    <p:panel header="Sugerencias">  
+				        <h:panelGrid columns="2" cellpadding="5">  
+				            <p:outputLabel for="msg" value="Idea o sugerencia: " />
+							<p:inputTextarea id="msg" label="Ideas y sugerencias" value="#{vistaSugerencia.datos}" rows="4" cols="50" autoResize="false" style="resize: none" required="true"/>
+				        </h:panelGrid>  
+				 
+				        <p:commandButton value="Enviar" actionListener="#{vistaSugerencia.enviar}" update="growl" />  
+				    </p:panel> 
+				</h:form>
+			</center>
+		</p:outputPanel>
+	</ui:define>
+
+</ui:composition>

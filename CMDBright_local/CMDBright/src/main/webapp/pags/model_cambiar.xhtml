@@ -1,0 +1,159 @@
+<!-- 
+/*****************************************************************************
+ * CMDBright - Clear and nimble Configuration Management DataBase 
+ * Copyright (C) 2016  Eladio Fernández Barrigüete
+ * 
+ * This file is part of CMDBright.
+ * 
+ * CMDBright is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * CMDBright is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with CMDBright.  If not, see <http://www.gnu.org/licenses/>.
+******************************************************************************/
+ -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/facelets/templates/baseTemplate.xhtml">
+
+	<ui:define name="titulo">
+        Modelos
+    </ui:define>
+
+	<ui:define name="cabecera">
+		<h1>Modelos</h1>
+	</ui:define>
+
+	<ui:define name="content">
+
+
+<h2 align="center">Modelo (scrollHeight="100%") </h2>
+	<h:form id="formVerModelos">
+		<p:dataTable id="tablaModelos" var="model" value="#{vistaModel.modelos}" widgetVar="tablaM" scrollHeight="100%" 
+				filteredValue="#{vistaModel.modelosFiltrados}" emptyMessage="Nada que mostrar. Prueba a cambiar el filtrado" 
+				scrollable="true" resizableColumns="true" selectionMode="single" selection="#{vistaModel.seleccionado}" rowKey="#{model.id}">
+			<p:ajax event="rowSelect" update="editModelBtn" />
+			<f:facet name="header">
+				<p:outputPanel>
+					<h:outputText value="Buscar en todos los campos: " />
+					<p:inputText id="globalFilter" onkeyup="PF('tablaM').filter()" style="width:200px" placeholder="Introduce búsqueda..."/>
+					<p:commandLink onclick="PF('tablaM').clearFilters()" style="margin-left:20px;" update="tablaModelos"><span class="fa-stack"><i class="fa fa-filter fa-stack-1x"/><i class="fa fa-ban fa-stack-2x"/></span></p:commandLink>
+					<p:commandLink actionListener="#{vistaModel.init}" style="margin-left:20px;" update="@all"><i class="fa fa-refresh fa-lg"/></p:commandLink>						
+				</p:outputPanel>
+			</f:facet>
+
+			<p:column sortBy="#{model.tipoModel.nombre}" filterBy="#{model.tipoModel.nombre}" filterStyle="display:none" headerText="Tipo" style="width:150px">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('tablaM').filter()">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{vistaModel.tipoModelos}" var="tm" itemLabel="#{tm.nombre}" itemValue="#{tm.nombre}"/>
+					</p:selectOneMenu>
+				</f:facet>
+				<h:outputText value="#{model.tipoModel.nombre}" />
+			</p:column>
+
+			<p:column sortBy="#{model.fabricante.nombre}" filterBy="#{model.fabricante.nombre}" filterStyle="display:none" headerText="Fabricante" style="width:150px">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('tablaM').filter()">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{vistaModel.fabricantes}" var="f" itemLabel="#{f.nombre}" itemValue="#{f.nombre}"/>
+					</p:selectOneMenu>
+				</f:facet>
+				<h:outputText value="#{model.fabricante.nombre}" />
+			</p:column>
+
+			<p:column sortBy="#{model.nombre}" filterBy="#{model.nombre}" filterStyle="display:none" headerText="Modelo">
+				<h:outputText value="#{model.nombre}" />
+			</p:column>
+
+			<p:column sortBy="#{model.partNum}" filterBy="#{model.partNum}" filterStyle="display:none" headerText="Part Number">
+				<h:outputText value="#{model.partNum}" />
+			</p:column>
+
+			<p:column sortBy="#{model.enrackable}" headerText="Enrackable" style="width:80px" >
+				<h:commandLink rendered="#{model.enrackable}">
+					<i class="fa fa-check-square-o"> sí</i>
+				</h:commandLink>
+				<h:commandLink rendered="#{!model.enrackable}">
+					<i class="fa fa-times"> no</i>
+				</h:commandLink>
+			</p:column>
+
+			<f:facet name="footer">
+				<p:commandButton id="addModelBtn" process="@this" update="@all" icon="fa fa-plus" value="Añadir Modelo"  
+					actionListener="#{vistaModel.addModel}" disabled="#{vistaModel.btnAddDesactivado}" action="PF('tablaM').unselectAllRows()" />
+				<p:commandButton id="editModelBtn" process="tablaModelos" update="@all" icon="fa fa-fw fa-edit" value="Editar Modelo"  
+					actionListener="#{vistaModel.editModel}" disabled="#{vistaModel.btnEditDesactivado}" action="PF('tablaM').unselectAllRows()" />
+			</f:facet>
+
+		</p:dataTable>
+	</h:form>
+	
+	<h:form id="formAddModelo">
+		<p:panel id="panelNuevoModelo" header="#{vistaModel.headerNuevoModel}" closable="true" style="margin-bottom:10px; " rendered="#{vistaModel.estadoPanel}" >
+			<h:panelGrid id="datosNuevoModelo" columns="3" cellpadding="5">
+				
+				<p:outputLabel for="menuTipo" value="Tipo de hardware: " />
+				<p:selectOneMenu id="menuTipo"  value="#{vistaModel.m.tipoModel}" converter="entityConverter" required="true">
+					<f:selectItem itemLabel="Elige uno" itemValue="" />
+					<f:selectItems value="#{vistaModel.tipoModelos}" var="tm" itemLabel="#{tm.nombre}" itemValue="#{tm}" />
+					<p:column> #{tm.nombre} </p:column>
+				</p:selectOneMenu>
+				<p:message for="menuTipo" />
+				
+				<p:outputLabel for="menuFabricante" value="Fabricante: " />
+				<p:selectOneMenu id="menuFabricante" value="#{vistaModel.m.fabricante}" converter="entityConverter" required="true">
+					<f:selectItem itemLabel="Elige uno" itemValue="" />
+					<f:selectItems value="#{vistaModel.fabricantes}" var="f" itemLabel="#{f.nombre}" itemValue="#{f}" />
+					<p:column> #{f.nombre} </p:column>
+				</p:selectOneMenu>
+				<p:message for="menuFabricante" />
+				
+				<p:outputLabel for="inputNombre" value="Modelo: " />
+				<p:inputText id="inputNombre" value="#{vistaModel.m.nombre}" required="true" />
+				<p:message for="inputNombre" />
+				
+				<p:outputLabel for="inputPN" value="Part Number: " />
+				<p:inputText id="inputPN" value="#{vistaModel.m.partNum}"/>
+				<p:message for="inputPN" />
+				<p:outputLabel/>
+				
+				<p:outputLabel value="Enrackable: " />
+				<p:selectBooleanCheckbox value="#{vistaModel.m.enrackable}"/>
+				<p:outputLabel/>
+			</h:panelGrid>
+			
+			
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton id="savBtn" value="Guardar NUEVO modelo" style="margin-right:20px;" process="@this,formAddModelo:datosNuevoModelo" update="@all" actionListener="#{vistaModel.grabarDatosNew}" rendered="#{vistaModel.mostrarSavBtn}"/>
+					<p:commandButton id="modBtn" value="Guardar modificaciones"  style="margin-right:20px;" process="@this,formAddModelo:datosNuevoModelo" update="@all" actionListener="#{vistaModel.grabarDatosMod}" rendered="#{vistaModel.mostrarModBtn}"/>
+					<p:commandButton id="cancelBtn" value="Cancelar"  style="margin-right:20px;" process="@this" update="@all" actionListener="#{vistaModel.cancelar}"/>
+					<p:commandButton id="delBtn" value="BORRAR modelo"  style="margin-left:100px; color:red" process="@this,formAddModelo:datosNuevoModelo" update="@all" actionListener="#{vistaModel.borrarMod}" rendered="#{vistaModel.mostrarModBtn}"/>
+				</f:facet>
+				
+				<f:facet name="right">
+					<p:commandButton id="btnResetModel" value="Reset Form" styleClass="ui-priority-primary" process="@this" update=":form:formAddModelo" actionListener="#{vistaModel.resetForm}" />
+				</f:facet>
+			</p:toolbar>
+		</p:panel>
+	</h:form>
+	
+	<p:messages id="messages" />
+
+
+
+
+	</ui:define>
+
+</ui:composition>

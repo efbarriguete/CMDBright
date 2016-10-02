@@ -1,0 +1,49 @@
+<!-- 
+/*****************************************************************************
+ * CMDBright - Clear and nimble Configuration Management DataBase 
+ * Copyright (C) 2016  Eladio Fernández Barrigüete
+ * 
+ * This file is part of CMDBright.
+ * 
+ * CMDBright is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * CMDBright is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with CMDBright.  If not, see <http://www.gnu.org/licenses/>.
+******************************************************************************/
+ -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/facelets/templates/baseTemplate.xhtml">
+
+	<ui:define name="titulo">
+        Bienvenid@
+    </ui:define>
+
+
+	<ui:define name="content">
+		<p:outputPanel id="outputPanel" style="background-color:yellowgreen; height:100%">
+			<center>
+				<br/><br/><br/><br/><br/><br/><br/>
+				<br/><br/><br/><br/><br/><br/><br/>
+				<i class="fa fa-warning fa-5x"></i>
+				<i class="fa fa-exclamation-circle fa-5x"></i>
+				<h1> En construcción </h1>
+				<p:separator style="border-color:teal; width:500px" />
+				<br/><br/>
+				<h3> Estamos trabajando en ello. En breve podrá disponer de este apartado. </h3>
+			</center>
+		</p:outputPanel>
+	</ui:define>
+
+</ui:composition>

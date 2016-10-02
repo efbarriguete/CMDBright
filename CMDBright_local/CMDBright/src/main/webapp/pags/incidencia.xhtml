@@ -1,0 +1,194 @@
+<!-- 
+/*****************************************************************************
+ * CMDBright - Clear and nimble Configuration Management DataBase 
+ * Copyright (C) 2016  Eladio Fernández Barrigüete
+ * 
+ * This file is part of CMDBright.
+ * 
+ * CMDBright is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * CMDBright is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with CMDBright.  If not, see <http://www.gnu.org/licenses/>.
+******************************************************************************/
+ -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/facelets/templates/baseTemplate.xhtml">
+
+
+
+<ui:define name="titulo">
+	Incidencias
+</ui:define>
+
+
+<ui:define name="content">
+
+	<h2 align="center">Incidencias</h2>
+
+	<h:form id="formAdd">
+		<p:growl id="mensajes" for="mensajes" showDetail="true" life="4500" />
+		<p:panel id="panelMain" header="#{vistaIncidencia.headerPanel}" style="margin:20px; border-color:teal;" rendered="#{vistaIncidencia.estadoPanel}" >
+			<p:focus context="panelMain"/>
+			<h:panelGrid columns = "2" cellpadding="5">
+				<p:panel style="width:600px">
+				<h:panelGrid id="datosNuevos" columns="3" cellpadding="5">
+
+					<p:outputLabel for="inputFecha" value="Fecha de Creación: " />
+					<p:outputLabel id="inputFecha" value="#{vistaIncidencia.datosForm.fechaIni}" />
+					<p:message for="inputFecha" />
+		
+					<p:outputLabel for="menuTipo" value="Tipo de incidencia: " />
+					<p:selectOneMenu id="menuTipo"  value="#{vistaIncidencia.datosForm.tipoIncidencia}" converter="entityConverter" required="true">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" />
+						<f:selectItems value="#{vistaIncidencia.tipoIncidencias}" var="x" itemLabel="#{x.nombre}" itemValue="#{x}" />
+					</p:selectOneMenu>
+					<p:message for="menuTipo" />
+		
+					<p:outputLabel for="menuEstado" value="Estado: " />
+					<p:selectOneMenu id="menuEstado"  value="#{vistaIncidencia.datosForm.estadoIncidencia}" converter="entityConverter" required="true">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" />
+						<f:selectItems value="#{vistaIncidencia.estadoIncidencias}" var="x" itemLabel="#{x.nombre}" itemValue="#{x}" />
+					</p:selectOneMenu>
+					<p:message for="menuEstado" />
+		
+					<p:outputLabel value="Descripción: " />
+					<p:inputText id="inputDescrip" label="Descripción" value="#{vistaIncidencia.datosForm.descrip}" size="30"/>
+					<p:message for="inputDescrip" />
+	
+				</h:panelGrid>
+				</p:panel>
+
+		<!--  *************************************************************************  -->
+			
+				<p:panel id="otrosDatos" style="width:400px">
+					<p:panel header="Asociar con esta incidencia: ">
+						<h:panelGrid columns="3" cellpadding="5">
+							<p:outputLabel for="menuEquip" value="Equipamiento: " />
+							<p:selectOneMenu id="menuEquip"  value="#{vistaIncidencia.datosForm.equip}" converter="entityConverter">
+								<p:ajax update="descripEquip"/>
+								<f:selectItem itemLabel="Elige uno" itemValue="#{null}" />
+								<f:selectItems value="#{vistaIncidencia.equips}" var="x" itemLabel="#{x.etSergas}" itemValue="#{x}" />
+							</p:selectOneMenu>
+							<p:outputLabel id="descripEquip" for="menuEquip" value="#{vistaIncidencia.datosForm.equip.nombre}" />
+
+							<p:outputLabel for="menuToma" value="Toma: " />
+							<p:selectOneMenu id="menuToma"  value="#{vistaIncidencia.datosForm.toma}" converter="entityConverter">
+								<p:ajax update="descripToma"/>
+								<f:selectItem itemLabel="Elige uno" itemValue="#{null}" />
+								<f:selectItems value="#{vistaIncidencia.tomas}" var="x" itemLabel="#{x.nombre}" itemValue="#{x}" />
+							</p:selectOneMenu>
+							<p:outputLabel id="descripToma" for="menuToma" value="#{vistaIncidencia.datosForm.toma.nombre}" />
+						</h:panelGrid>
+					</p:panel>
+				</p:panel>
+			</h:panelGrid>
+
+		<!--  *************************************************************************  -->
+		<!--  *************************************************************************  -->
+			
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton id="savBtn" value="Guardar NUEVO elemento" process="@this formAdd:datosNuevos" update="formAdd" actionListener="#{vistaIncidencia.grabarDatosNew}" rendered="#{vistaIncidencia.mostrarSavBtn}" style="margin-right:20px;"/>
+					<p:commandButton id="modBtn" value="Guardar modificaciones" process="@this formAdd:datosNuevos formVer:tablaMain" update="formAdd" actionListener="#{vistaIncidencia.grabarDatosMod}" rendered="#{vistaIncidencia.mostrarModBtn}" style="margin-right:20px;"/>
+					<p:commandButton id="delBtn" value="BORRAR elemento" process="@this formAdd:datosNuevos formVer:tablaMain" update="formAdd" actionListener="#{vistaIncidencia.borrar}" rendered="#{vistaIncidencia.mostrarDelBtn}" style="margin-right:20px;"/>
+					<p:commandButton id="cancelBtn" value="Cancelar" process="@this" update="formAdd" actionListener="#{vistaIncidencia.cancelar}" style="margin-right:20px;"/>
+				</f:facet>
+				
+				<f:facet name="right">
+					<p:commandButton id="resetBtn" value="Reset Form" styleClass="ui-priority-primary" process="@this" update="formAdd" actionListener="#{vistaIncidencia.resetForm}" />
+				</f:facet>
+			</p:toolbar>
+				<p:messages id="mensajesAdd" showDetail="true"/>
+		</p:panel>
+
+		<!--  *************************************************************************  -->
+		<!--  *************************** Botones de acción ***************************  -->
+						
+		<p:commandButton id="addBtn" process="@this" update="formAdd formVer" icon="fa fa-plus" value="Añadir Incidencia"  
+			actionListener="#{vistaIncidencia.add}" disabled="#{vistaIncidencia.btnAddDesactivado}" action="PF('tablaM').unselectAllRows()" />
+		<p:commandButton id="editBtn" process="@this" update="formAdd formVer" icon="fa fa-fw fa-edit" value="Editar Incidencia"  
+			actionListener="#{vistaIncidencia.edit}" disabled="#{vistaIncidencia.btnEditDesactivado}" action="PF('tablaM').unselectAllRows()" />
+		<p:commandButton id="elimBtn" process="@this" update="formAdd formVer" icon="fa fa-fw fa-remove" value="Borrar Incidencia"  
+			actionListener="#{vistaIncidencia.eliminar}" disabled="#{vistaIncidencia.btnEditDesactivado}" action="PF('tablaM').unselectAllRows()" />
+
+		<!--  *************************** Fin Botones de acción ***************************  -->
+		<!--  *****************************************************************************  -->
+
+	</h:form>
+
+	
+	
+	
+	
+
+
+
+	<h:form id="formVer">
+		<p:dataTable id="tablaMain" var="incidencia" value="#{vistaIncidencia.incidencias}" widgetVar="tablaM"
+			filteredValue="#{vistaIncidencia.incidenciasFiltrados}" emptyMessage="Ningún elemento encontrado" 
+			scrollable="true" scrollHeight="#{pages.tamanoScroll}" resizableColumns="true" selectionMode="single" selection="#{vistaIncidencia.seleccionado}" rowKey="#{incidencia.id}">
+			<p:ajax event="rowSelect" update="formAdd:editBtn formAdd:elimBtn" />
+			<f:facet name="header">
+				<p:outputPanel>
+					<h:outputText value="Buscar en todos los campos: " />
+					<p:inputText id="globalFilter" onkeyup="PF('tablaM').filter()" placeholder="Introduce búsqueda..." style="width:200px"/>
+					<p:commandLink onclick="PF('tablaM').clearFilters()" update="tablaMain" style="margin-left:20px;"><span class="fa-stack"><i class="fa fa-filter fa-stack-1x"/><i class="fa fa-ban fa-stack-2x"/></span></p:commandLink>
+					<p:commandLink actionListener="#{vistaIncidencia.init}" update="formAdd formVer" style="margin-left:20px;"><i class="fa fa-refresh fa-lg"/></p:commandLink>						
+				</p:outputPanel>
+			</f:facet>
+
+		<!--  *************************************************************************  -->
+		<!--  *************************** COLUMNAS ***************************  -->
+			
+			<p:column sortBy="#{incidencia.tipoIncidencia.nombre}" filterBy="#{incidencia.tipoIncidencia.nombre}" filterStyle="display:none" headerText="Tipo">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('tablaM').filter()">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{vistaIncidencia.tipoIncidencias}" var="x" itemLabel="#{x.nombre}" itemValue="#{x.nombre}"/>
+					</p:selectOneMenu>
+				</f:facet>
+				<h:outputText value="#{incidencia.tipoIncidencia.nombre}" />
+			</p:column>
+			
+			<p:column sortBy="#{incidencia.estadoIncidencia.nombre}" filterBy="#{incidencia.estadoIncidencia.nombre}" filterStyle="display:none" headerText="Estado">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('tablaM').filter()">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{vistaIncidencia.estadoIncidencias}" var="x" itemLabel="#{x.nombre}" itemValue="#{x.nombre}"/>
+					</p:selectOneMenu>
+				</f:facet>
+				<h:outputText value="#{incidencia.estadoIncidencia.nombre}" />
+			</p:column>
+			
+			<p:column sortBy="#{incidencia.id}" filterBy="#{incidencia.id}" filterStyle="display:none" headerText="Núm. incidencia" style="width:150px"> <h:outputText value="#{incidencia.id}"/> </p:column>
+			<p:column sortBy="#{vistaIncidencia.datosForm.fechaIni}" filterBy="#{vistaIncidencia.datosForm.fechaIni}" filterStyle="display:none" headerText="Fecha de creación" style="width:150px"> <h:outputText value="#{vistaIncidencia.datosForm.fechaIni}"/> </p:column>
+			<p:column sortBy="#{incidencia.descrip}" filterBy="#{incidencia.descrip}" filterStyle="display:none" headerText="Descripción"> <h:outputText value="#{incidencia.descrip}" /> </p:column>
+			<p:column sortBy="#{incidencia.fechaFin}" filterBy="#{incidencia.fechaFin}" filterStyle="display:none" headerText="Fecha de cierre" style="width:100px"> <h:outputText value="#{incidencia.fechaFin}"/> </p:column>
+
+		<!--  *************************** FIN COLUMNAS ***************************  -->
+		<!--  *************************************************************************  -->
+
+			<f:facet name="footer">
+				<p:outputLabel value="#{vistaIncidencia.verTotal}" style="margin-left:50px;"/>
+			</f:facet>
+			
+		</p:dataTable>
+		<p:blockUI block="tablaMain" widgetVar="buiFV"/>
+	</h:form>
+</ui:define>
+
+
+</ui:composition>

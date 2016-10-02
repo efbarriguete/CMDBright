@@ -1,0 +1,183 @@
+<!-- 
+/*****************************************************************************
+ * CMDBright - Clear and nimble Configuration Management DataBase 
+ * Copyright (C) 2016  Eladio Fernández Barrigüete
+ * 
+ * This file is part of CMDBright.
+ * 
+ * CMDBright is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * CMDBright is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with CMDBright.  If not, see <http://www.gnu.org/licenses/>.
+******************************************************************************/
+ -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/facelets/templates/baseTemplate.xhtml">
+
+
+
+<ui:define name="titulo">
+	Secciones
+</ui:define>
+
+
+<ui:define name="content">
+
+	<h2 align="center">Secciones</h2>
+
+	<h:form id="formAdd">
+		<p:growl id="mensajes" for="mensajes" showDetail="true" life="4500" />
+		<p:panel id="panelMain" header="#{vistaSeccion.headerPanel}" style="margin:20px; border-color:teal;" rendered="#{vistaSeccion.estadoPanel}">
+			<p:focus context="panelMain" />
+				<h:panelGrid columns = "2" cellpadding="5">
+			
+					<h:panelGrid id="datosNuevos" columns="3" cellpadding="5">
+	
+						<p:outputLabel for="menuCentro" value="Centro: " />
+						<p:selectOneMenu id="menuCentro" value="#{vistaSeccion.centro}" converter="entityConverter" required="true" style="width:150px">
+							<p:ajax listener="#{vistaSeccion.onChangeCentro}" update="menuPlanta" />
+							<f:selectItem itemLabel="Elige centro" itemValue="" noSelectionOption="false" />
+							<f:selectItems value="#{vistaSeccion.centros}" var="c" itemLabel="#{c.nombre}" itemValue="#{c}"/>
+							<p:column> #{c.nombre} </p:column>
+						</p:selectOneMenu>
+						<p:message for="menuCentro" />
+		
+							<!-- Este es realmente el dato que tengo que guardar: planta (en vistaSeccion.datosForm.planta) -->
+						<p:outputLabel for="menuPlanta" value="Planta: " />
+						<p:selectOneMenu id="menuPlanta" value="#{vistaSeccion.datosForm.planta}" converter="entityConverter" required="true" style="width:150px">
+							<f:selectItem itemLabel="Elige planta" itemValue="" noSelectionOption="true" />
+							<f:selectItems value="#{vistaSeccion.plantas}" var="p" itemLabel="#{p.nombre}" itemValue="#{p}"/>
+							<p:column> #{p.nombre} </p:column>
+						</p:selectOneMenu>
+						<p:message for="menuPlanta" />
+		
+		
+						<p:outputLabel value="Seccion: " />
+						<p:inputText id="inputNombre" label="Seccion" value="#{vistaSeccion.datosForm.nombre}" required="true" />
+						<p:message for="inputNombre" />
+		
+						<p:outputLabel value="Descripción: " />
+						<p:inputText id="inputDescrip" label="Descripción" value="#{vistaSeccion.datosForm.descrip}" size="50" />
+						<p:message for="inputDescrip" />
+	
+					</h:panelGrid>
+				
+					<p:panel>
+						<p:fileUpload fileUploadListener="#{vistaSeccion.recogeArchivo}" mode="advanced" dragDropSupport="false"
+	         						update="mensajes imgPlano" sizeLimit="1000000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+	         				<f:facet name="header">
+	         					<h:outputText value="Añadir un plano a esta sección: " />
+	         				</f:facet>
+	         			<p:graphicImage id="imgPlano" rendered="#{not empty vistaSeccion.datosForm.plano.rutaPlano}" name="#{vistaSeccion.datosForm.plano.rutaPlano}" />
+					</p:panel>
+
+				</h:panelGrid>
+				
+				
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton id="savBtn" value="Guardar NUEVO elemento"	process="@this formAdd:datosNuevos" update="formAdd" actionListener="#{vistaSeccion.grabarDatosNew}" rendered="#{vistaSeccion.mostrarSavBtn}" style="margin-right:20px;" />
+					<p:commandButton id="modBtn" value="Guardar modificaciones" process="@this formAdd:datosNuevos formVer:tablaMain" update="formAdd" actionListener="#{vistaSeccion.grabarDatosMod}" rendered="#{vistaSeccion.mostrarModBtn}"	style="margin-right:20px;" />
+					<p:commandButton id="delBtn" value="BORRAR elemento" process="@this formAdd:datosNuevos formVer:tablaMain" update="formAdd" actionListener="#{vistaSeccion.borrar}" rendered="#{vistaSeccion.mostrarDelBtn}" style="margin-right:20px;" />
+					<p:commandButton id="cancelBtn" value="Cancelar" process="@this" update="formAdd" actionListener="#{vistaSeccion.cancelar}" style="margin-right:20px;" />
+				</f:facet>
+
+				<f:facet name="right">
+					<p:commandButton id="resetBtn" value="Reset Form" styleClass="ui-priority-primary" 
+						process="@this" update="formAdd" actionListener="#{vistaSeccion.resetForm}" />
+				</f:facet>
+			</p:toolbar>
+			<p:messages id="mensajesAdd" showDetail="true" />
+		</p:panel>
+
+		<!--  *************************************************************************  -->
+		<!--  *************************** Botones de acción ***************************  -->
+
+		<p:commandButton id="addBtn" process="@this" update="formAdd formVer" icon="fa fa-plus" value="Añadir Seccion" 
+			actionListener="#{vistaSeccion.add}" disabled="#{vistaSeccion.btnAddDesactivado}" action="PF('tablaM').unselectAllRows()" />
+		<p:commandButton id="editBtn" process="@this" update="formAdd formVer" icon="fa fa-fw fa-edit" value="Editar Seccion" 
+			actionListener="#{vistaSeccion.edit}" disabled="#{vistaSeccion.btnEditDesactivado}" action="PF('tablaM').unselectAllRows()" />
+		<p:commandButton id="elimBtn" process="@this" update="formAdd formVer" icon="fa fa-fw fa-remove" value="Borrar Seccion" 
+			actionListener="#{vistaSeccion.eliminar}" disabled="#{vistaSeccion.btnEditDesactivado}" action="PF('tablaM').unselectAllRows()" />
+
+		<!--  *************************** Fin Botones de acción ***************************  -->
+		<!--  *****************************************************************************  -->
+
+	</h:form>
+
+
+
+
+
+	<h:form id="formVer">
+		<p:dataTable id="tablaMain" var="seccion" value="#{vistaSeccion.seccions}" widgetVar="tablaM" rowKey="#{seccion.id}"
+			filteredValue="#{vistaSeccion.seccionsFiltrados}" emptyMessage="Ningún elemento encontrado" scrollable="true"
+			scrollHeight="#{pages.tamanoScroll}" resizableColumns="true" selectionMode="single" selection="#{vistaSeccion.seleccionado}">
+			<p:ajax event="rowSelect" update="formAdd:editBtn formAdd:elimBtn" />
+			<f:facet name="header">
+				<p:outputPanel>
+					<h:outputText value="Buscar en todos los campos: " />
+					<p:inputText id="globalFilter" onkeyup="PF('tablaM').filter()" placeholder="Introduce búsqueda..." style="width:200px" />
+					<p:commandLink onclick="PF('tablaM').clearFilters()" update="tablaMain" style="margin-left:20px;"><span class="fa-stack"><i class="fa fa-filter fa-stack-1x" /><i	class="fa fa-ban fa-stack-2x" /></span></p:commandLink>
+					<p:commandLink actionListener="#{vistaSeccion.init}" update="formAdd formVer" style="margin-left:20px;">
+						<i class="fa fa-refresh fa-lg" />
+					</p:commandLink>
+				</p:outputPanel>
+			</f:facet>
+
+			<!--  *************************************************************************  -->
+			<!--  *************************** COLUMNAS ***************************  -->
+			<p:column sortBy="#{seccion.planta.centro.nombre}" filterBy="#{seccion.planta.centro.nombre}" filterStyle="display:none" headerText="Centro" style="width:150px">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('tablaM').filter()">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{vistaSeccion.centros}" var="x" itemLabel="#{x.nombre}" itemValue="#{x.nombre}"/>
+					</p:selectOneMenu>
+				</f:facet>
+				<h:outputText value="#{seccion.planta.centro.nombre}" />
+			</p:column>
+
+			<p:column sortBy="#{seccion.planta.nombre}" filterBy="#{seccion.planta.nombre}" filterStyle="display:none" headerText="Planta" style="width:150px">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('tablaM').filter()">
+						<f:selectItem itemLabel="Elige uno" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{vistaSeccion.plantas}" var="x" itemLabel="#{x.nombre}" itemValue="#{x.nombre}"/>
+					</p:selectOneMenu>
+				</f:facet>
+				<h:outputText value="#{seccion.planta.nombre}" />
+			</p:column>
+
+			<p:column sortBy="#{seccion.nombre}" filterBy="#{seccion.nombre}" filterStyle="display:none" headerText="Seccion" style="width:300px">
+				<h:outputText value="#{seccion.nombre}" />
+			</p:column>
+			<p:column sortBy="#{seccion.descrip}" filterBy="#{seccion.descrip}" filterStyle="display:none" headerText="Descripción">
+				<h:outputText value="#{seccion.descrip}" />
+			</p:column>
+
+			<!--  *************************** FIN COLUMNAS ***************************  -->
+			<!--  *************************************************************************  -->
+
+			<f:facet name="footer">
+				<p:outputLabel value="#{vistaSeccion.verTotal}" style="margin-left:50px;" />
+			</f:facet>
+
+		</p:dataTable>
+		<p:blockUI block="tablaMain" widgetVar="buiFV" />
+	</h:form>
+</ui:define>
+
+
+</ui:composition>
